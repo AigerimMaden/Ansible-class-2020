@@ -16,4 +16,4 @@
   - name: Add user lisa
     user:
       name: lisa
-      state: absent
+      state: present
