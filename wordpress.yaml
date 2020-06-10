@@ -1,22 +1,84 @@
 ---
-- name: Installs packages
+- name: Install wordpress
   become: yes
   become_method: sudo
   user: centos
   hosts: all
   tasks:
+  - name: Install epel release
+    yum:
+      name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+      state: present
+  - name: Add Remi Repository
+    yum_repository:
+      name: remi-php71
+      description: Remi's PHP 7.3 RPM repository for Enterprise Linux $releasever - $basearch
+      mirrorlist: http://rpms.remirepo.net/enterprise/$releasever/php73/mirror
+      enabled: yes
+      gpgcheck: 1
+      gpgkey: http://rpms.remirepo.net/RPM-GPG-KEY-remi
+  - name: Utilis install    
+    yum:
+      name: yum-utils
+      state: present
+
+  - name: Add packages
+    package:
+      name: "{{item}}"
+      state: present
+    with_items:
+    - httpd
+    - telnet
+    - php
+    - php-mysql
+    - mariadb
+    - mariadb-server
   - name: Install wordpress
     get_url:
       url: https://wordpress.org/latest.tar.gz
       dest: /var/www/html/
-
+  
+  - name: Unarchive
     unarchive:
-      src: latest.tar.gz
-      dest: /var/www/html/
       remote_src: yes
-
+      src: /var/www/html/wordpress-5.4.1.tar.gz
+      dest: /var/www/html/
+  
+  - name: Change own
+    file:
+      path: /var/www/html
+      owner: apache
+      group: apache    
+  
+  - name: copy
     copy:
-      src: /var/www/html/wordpress/*
+      remote_src: yes
+      src: /var/www/html/wordpress/
       dest: /var/www/html/
       owner: apache
       group: apache
+      mode: '0755'
+
+  - name: Disable SELinux
+    selinux:
+      state: disabled
+
+  - name: Start service httpd, if not started
+    service:
+      name: httpd
+      state: started
+  
+  - name: Enable service httpd
+    service:
+      name: httpd
+      enabled: yes
+
+  - name: Start mariadb
+    service:
+      name: mariadb
+      state: started
+
+  - name: Enable service mariadb
+    service:
+      name: mariadb
+      enabled: yes    
