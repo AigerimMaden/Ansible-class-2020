@@ -35,3 +35,10 @@
   - name: Get key
     when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "6")
     command: "r1soft-setup  --get-key http://3.8.204.25:8080/"
+
+  handlers:
+    - name: AGENT_INSTALLED
+      service:
+        name: cdp-agent
+        state: restarted
+        enabled: yes
