@@ -24,6 +24,7 @@
       name: cdp-agent
       state: restarted
       enabled: yes
+    notify: AGENT_INSTALLED_ON_CENTOS6
 
   - name: Stop iptables
     when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "6")

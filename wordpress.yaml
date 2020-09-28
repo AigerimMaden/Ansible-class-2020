@@ -41,7 +41,7 @@
   - name: Unarchive
     unarchive:
       remote_src: yes
-      src: /var/www/html/wordpress-5.4.1.tar.gz
+      src: /var/www/html/wordpress-5.4.2.tar.gz
       dest: /var/www/html/
   
   - name: Change own

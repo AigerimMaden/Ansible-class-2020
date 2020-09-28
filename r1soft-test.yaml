@@ -1,0 +1,12 @@
+---
+- name: Installs R1soft Agent
+  become: yes
+  become_method: sudo
+  user: centos
+  hosts: all
+  tasks:
+
+  - name: Install r1soft agent
+    when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "6")
+    yum: 
+      name: serverbackup-enterprise-agent 
